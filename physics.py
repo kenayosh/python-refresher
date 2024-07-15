@@ -4,17 +4,23 @@ import matplotlib.patches as patches
 
 G = 9.81
 D_WATER = 1000
+ONE_ATM = 101325
 
 # TODO
 # Doc strings
 # Unit tests
 
 
-def calculate_bouyancy(V, density_fluid):
+def calculate_bouyancy(
+    V: float,  # Type hints (hints for docs that says V should be int), python does not enforce this.
+    density_fluid: int,
+):
     """This calculates bouyancy
     Takes v as volume (m^3), and density_fluid as density (kg/m^3)
     Returns bouyancy
     """
+    if type(V) is not isinstance(int) or type(V) is not isinstance(float):
+        raise ValueError("V must be an integer")
     return V * density_fluid * G
 
 
@@ -25,7 +31,7 @@ def will_it_float(V, mass):
 
 
 def calculate_pressure(depth):
-    return depth * G * D_WATER
+    return depth * G * D_WATER + ONE_ATM
 
 
 def calculate_acceleration(F, m):
@@ -88,19 +94,20 @@ def calculate_auv2_acceleration(T_mag, alpha, theta, mass=100):
 def calculate_auv2_angular_acceleration(Thruster_mag, alpha, L, l, inertia=100):
     # Thruster vectors
     Thruster_angles = np.array([alpha, -alpha, np.pi + alpha, np.pi - alpha])
-    Thruster_vectors = np.zeros((4, 2))
+    Thruster_vectors = np.zeros((4, 3))
 
     for i in range(4):
         Thruster_vectors[i, 0] = Thruster_mag[i] * np.cos(Thruster_angles[i])
         Thruster_vectors[i, 1] = Thruster_mag[i] * np.sin(Thruster_angles[i])
+        Thruster_vectors[i, 2] = 0
 
     # Moment arm vectors
-    moment_arms = np.array([[l, -L], [l, L], [-l, L], [-l, -L]])
+    moment_arms = np.array([[l, -L, 0], [l, L, 0], [-l, L, 0], [-l, -L, 0]])
 
     # Find torques
     torque = np.zeros(4)
     for i in range(4):
-        torque[i] = np.cross(moment_arms[i], Thruster_vectors[i])
+        torque[i] = np.linalg.norm(np.cross(moment_arms[i], Thruster_vectors[i]))
 
     # Find acceleration
     return np.sum(torque) / inertia
@@ -174,23 +181,41 @@ def simulate_auv2_motion(
         vy_old = vy_new
         omega_old = omega_new
 
-    return (np_t, np_x, np_y, np_theta, np_v, np_omega, np_a)
+    return (np_t, np_x, np_y, np_theta, np_v, np_omega, np_a, l, L)
 
 
-def plot_auv2_motion():
+def plot_auv2_motion(
+    Thruster_mag,
+    alpha,
+    L,
+    l,
+    mass=100,
+    inertia=100,
+    dt=0.1,
+    t_final=1,
+    x0=0,
+    y0=0,
+    theta0=0,
+):
+
     fig, ax = plt.subplots()
-    rect = patches.Rectangle(
-        (50, 100), 40, 30, linewidth=1, edgecolor="r", facecolor="none"
-    )
+    fig.set_figwidth(100)
+    fig.set_figheight(y.max())
+
+    motion = simulate_auv2_motion(Thruster_mag, alpha, L, l, inertia, theta0, mass)
+
+    for i in range(motion[0].size()):
+        rect = patches.Rectangle(
+            (motion[1][i], motion[2][i]),
+            l,
+            L,
+            motion[3][i],
+            linewidth=1,
+            edgecolor="r",
+            facecolor="none",
+        )
     ax.add_patch(rect)
-    plt.show()
+    plt.savefig("plot.png")
 
-
-plot_auv2_motion()
-print(
-    simulate_auv2_motion(
-        np.array([-1, 1, 1, -1]), np.pi / 45, 2, 2, inertia=0.1, theta0=0, mass=0.1
-    )
-)
 
 # print(calculate_auv2_angular_acceleration(np.array([10, 20, 30, 40]), 0.523599, 2, 1, 150))

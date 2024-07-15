@@ -1,11 +1,20 @@
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 G = 9.81
 D_WATER = 1000
 
+# TODO
+# Doc strings
+# Unit tests
+
 
 def calculate_bouyancy(V, density_fluid):
+    """This calculates bouyancy
+    Takes v as volume (m^3), and density_fluid as density (kg/m^3)
+    Returns bouyancy
+    """
     return V * density_fluid * G
 
 
@@ -169,9 +178,15 @@ def simulate_auv2_motion(
 
 
 def plot_auv2_motion():
-    pass
+    fig, ax = plt.subplots()
+    rect = patches.Rectangle(
+        (50, 100), 40, 30, linewidth=1, edgecolor="r", facecolor="none"
+    )
+    ax.add_patch(rect)
+    plt.show()
 
 
+plot_auv2_motion()
 print(
     simulate_auv2_motion(
         np.array([-1, 1, 1, -1]), np.pi / 45, 2, 2, inertia=0.1, theta0=0, mass=0.1

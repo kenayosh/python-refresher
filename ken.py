@@ -1,16 +1,15 @@
-import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 
-A = [1,2,3,4]
-B = [5,6,7,8]
-C = np.zeros((4,2))
-print(C)
+fig = plt.figure(figsize=(10, 10))
+plt.plot()
 
-for i in range (4):
-    for j in range (2):
-        C[i,j] = A[i] + B[i]
-        C[i,j+1] = 6
-        
-        
-print(C)
-    
-    
+plt.gca().add_patch(
+    Rectangle((25, 50), 15, 15, fill=True, color="g", alpha=0.5, zorder=100, figure=fig)
+)
+
+plt.gca().add_patch(
+    Rectangle((50, 100), 40, 80, angle=30, edgecolor="red", facecolor="none", lw=4)
+)
+
+plt.savefig("plot.png")

@@ -184,6 +184,10 @@ def simulate_auv2_motion(
     return (np_t, np_x, np_y, np_theta, np_v, np_omega, np_a, l, L)
 
 
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+
+
 def plot_auv2_motion(
     Thruster_mag,
     alpha,
@@ -198,24 +202,41 @@ def plot_auv2_motion(
     theta0=0,
 ):
 
-    fig, ax = plt.subplots()
-    fig.set_figwidth(100)
-    fig.set_figheight(y.max())
+    fig = plt.figure(figsize=(10, 10))
+    plt.plot()
 
-    motion = simulate_auv2_motion(Thruster_mag, alpha, L, l, inertia, theta0, mass)
+    motion = simulate_auv2_motion(
+        Thruster_mag, alpha, L, l, mass, inertia, dt, t_final, x0, y0, theta0
+    )
 
-    for i in range(motion[0].size()):
-        rect = patches.Rectangle(
-            (motion[1][i], motion[2][i]),
-            l,
-            L,
-            motion[3][i],
-            linewidth=1,
-            edgecolor="r",
-            facecolor="none",
+    for i in range(int(t_final / dt)):
+        plt.gca().add_patch(
+            Rectangle(
+                (motion[1][i], motion[2][i]),
+                l,
+                L,
+                angle=motion[3][i],
+                edgecolor="red",
+                facecolor="none",
+                lw=4,
+            )
         )
-    ax.add_patch(rect)
+
     plt.savefig("plot.png")
 
 
-# print(calculate_auv2_angular_acceleration(np.array([10, 20, 30, 40]), 0.523599, 2, 1, 150))
+plot_auv2_motion(
+    np.array([0, 0, 300, 300]), 0.5, 3, 2, t_final=3, dt=0.05, inertia=1, mass=1
+)
+print(
+    simulate_auv2_motion(
+        np.array([0, 0, 300, 300]),
+        0.5,
+        3,
+        2,
+        t_final=3,
+        dt=0.05,
+        inertia=1,
+        mass=1,
+    )
+)

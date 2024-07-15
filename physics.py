@@ -204,6 +204,7 @@ def plot_auv2_motion(
 
     fig = plt.figure(figsize=(10, 10))
     plt.plot()
+    plt.gca().set_aspect("equal", adjustable="box")
 
     motion = simulate_auv2_motion(
         Thruster_mag, alpha, L, l, mass, inertia, dt, t_final, x0, y0, theta0
@@ -224,11 +225,11 @@ def plot_auv2_motion(
         plt.gca().add_patch(
             Rectangle(
                 (
-                    motion[1][i] + np.cos(motion[3][i]) * np.sqrt(l**2 + L**2),
-                    motion[2][i] + np.sin(motion[3][i]) * np.sqrt(l**2 + L**2),
+                    motion[1][i] + np.cos(motion[3][i]) * L,
+                    motion[2][i] + np.sin(motion[3][i]) * L,
                 ),
-                l,
-                L,
+                l / 2,
+                L / 2,
                 angle=motion[3][i],
                 edgecolor="red",
                 facecolor="none",

@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib as plt
 
 G = 9.81
 D_WATER = 1000

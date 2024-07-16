@@ -181,7 +181,7 @@ def simulate_auv2_motion(
         vy_old = vy_new
         omega_old = omega_new
 
-    return (np_t, np_x, np_y, np_theta, np_v, np_omega, np_a, l, L)
+    return (np_t, np_x, np_y, np_theta, np_v, np_omega, np_a, L, l)
 
 
 import matplotlib.pyplot as plt

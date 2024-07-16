@@ -107,8 +107,7 @@ def calculate_auv2_angular_acceleration(Thruster_mag, alpha, L, l, inertia=100):
     # Find torques
     torque = np.zeros(4)
     for i in range(4):
-        torque[i] = np.linalg.norm(np.cross(moment_arms[i], Thruster_vectors[i]))
-
+        torque[i] = (np.cross(moment_arms[i], Thruster_vectors[i]))[2]
     # Find acceleration
     return np.sum(torque) / inertia
 
@@ -154,6 +153,7 @@ def simulate_auv2_motion(
         a_angular = calculate_auv2_angular_acceleration(
             Thruster_mag, alpha, L, l, inertia
         )
+
         # Calculate velocities
         vx_new = vx_old + a_x * dt
         vy_new = vy_old + a_y * dt
@@ -222,36 +222,11 @@ def plot_auv2_motion(
                 lw=4,
             )
         )
-        plt.gca().add_patch(
-            Rectangle(
-                (
-                    motion[1][i] + np.cos(motion[3][i]) * L,
-                    motion[2][i] + np.sin(motion[3][i]) * L,
-                ),
-                l / 2,
-                L / 2,
-                angle=motion[3][i],
-                edgecolor="red",
-                facecolor="none",
-                lw=4,
-            )
-        )
 
     plt.savefig("plot.png")
 
 
-plot_auv2_motion(
-    np.array([0, 0, 300, 300]), np.pi / 4, 1, 1, t_final=1, dt=0.05, inertia=1, mass=1
-)
 print(
-    simulate_auv2_motion(
-        np.array([0, 0, 300, 300]),
-        np.pi / 4,
-        1,
-        1,
-        t_final=3,
-        dt=0.05,
-        inertia=1,
-        mass=1,
-    )
+    simulate_auv2_motion(np.array([1000, 1000, 1000, 1000]), 2, 3, 3, mass=1, inertia=1)
 )
+plot_auv2_motion(np.array([1000, 1000, 0, 0]), 2, 3, 3, mass=1, inertia=1, t_final=1)

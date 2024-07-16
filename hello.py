@@ -61,3 +61,5 @@ def __main__():
 
 if __name__ == "__main__":
     __main__()
+    
+    #ros2 launch mavros apm.launch fcu_url:=udp://127.0.0.1:14550@14555 gcs_url:=udp://:14550@169.254.66.80:14550 tgt_system:=1 tgt_component:=1 system_id:=255 component_id:=240

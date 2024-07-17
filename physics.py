@@ -223,10 +223,28 @@ def plot_auv2_motion(
             )
         )
 
-    plt.savefig("plot.png")
+    plt.savefig("python-refresher/plot.png")
 
 
 print(
-    simulate_auv2_motion(np.array([1000, 1000, 1000, 1000]), 2, 3, 3, mass=1, inertia=1)
+    simulate_auv2_motion(np.array([2.0, 1.0, 2.0, 1.0]),
+                                        np.pi / 4,
+                                        0.3,
+                                        0.2,
+                                        mass = 1.0,
+                                        dt = 0.1,
+                                        t_final = 10.0,
+                                        x0 = 23,
+                                        y0 = 23,
+                                        theta0 = 2)
 )
-plot_auv2_motion(np.array([1000, 1000, 0, 0]), 2, 3, 3, mass=1, inertia=1, t_final=1)
+plot_auv2_motion(np.array([2.0, 1.0, 2.0, 1.0]),
+                                        np.pi / 4,
+                                        0.3,
+                                        0.2,
+                                        mass = 1.0,
+                                        dt = 0.1,
+                                        t_final = 100.0,
+                                        x0 = 23,
+                                        y0 = 23,
+                                        theta0 = 2)
